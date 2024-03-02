@@ -99,6 +99,8 @@ func main() {
 
 	// 重定向到后台管理
 	b.GET("/", (&handler.Home{}).Index)
+	b.GET("/article/list", (&handler.Home{}).Index)
+	b.GET("/article/detail", (&handler.Home{}).Detail)
 
 	// 启动服务
 	b.Run(":3000")

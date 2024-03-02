@@ -14,3 +14,11 @@ func (p *Home) Index(ctx *builder.Context) error {
 		"content": "Hello, world!",
 	})
 }
+
+// 详情
+func (p *Home) Detail(ctx *builder.Context) error {
+
+	return ctx.Render(200, "detail.html", map[string]interface{}{
+		"content": "Hello, world!",
+	})
+}
