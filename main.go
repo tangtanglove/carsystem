@@ -55,6 +55,7 @@ func providers() []interface{} {
 		&login.Index{},
 		&layout.Index{},
 		&dashboard.Index{},
+		&resource.Category{},
 		&resource.Article{},
 	}
 }

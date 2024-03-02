@@ -53,16 +53,8 @@ func (m *Post) Seeder() {
 	menuSeeders := []*appmodel.Menu{
 		{Id: 101, Name: "内容管理", GuardName: "admin", Icon: "icon-read", Type: 1, Pid: 0, Sort: 0, Path: "/post", Show: 1, IsEngine: 0, IsLink: 0, Status: 1},
 		{Id: 103, Name: "文章列表", GuardName: "admin", Icon: "", Type: 2, Pid: 101, Sort: 0, Path: "/api/admin/article/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
-		{Id: 104, Name: "单页管理", GuardName: "admin", Icon: "icon-page", Type: 1, Pid: 0, Sort: 0, Path: "/page", Show: 1, IsEngine: 0, IsLink: 0, Status: 1},
-		{Id: 105, Name: "单页列表", GuardName: "admin", Icon: "", Type: 2, Pid: 104, Sort: 0, Path: "/api/admin/page/index", Show: 1, IsEngine: 1, IsLink: 0, Status: 1},
 	}
 	db.Client.Create(&menuSeeders)
-
-	// 创建默认内容
-	seeders := []Post{
-		{Title: "关于我们", Name: "aboutus", Content: "关于我们", Status: 1, Type: "PAGE"},
-	}
-	db.Client.Create(&seeders)
 }
 
 // 获取TreeSelect组件数据
