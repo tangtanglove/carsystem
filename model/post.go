@@ -108,12 +108,16 @@ func (model *Post) FindTreeSelectNode(pid int) (list []*treeselect.TreeData) {
 func (model *Post) GetListByPage(page int, pageSize int, categoryId int, search string) (list []Post, total int64) {
 	posts := []Post{}
 
-	query := db.Client.
+	query := db.Client.Model(&Post{}).
 		Where("type", "ARTICLE").
 		Order("id DESC")
 
+	if page == 0 {
+		page = 1
+	}
+
 	if pageSize <= 0 {
-		pageSize = 10
+		pageSize = 9
 	}
 
 	if categoryId != 0 {
