@@ -103,3 +103,35 @@ func (model *Post) FindTreeSelectNode(pid int) (list []*treeselect.TreeData) {
 
 	return list
 }
+
+// 递归获取TreeSelect组件数据
+func (model *Post) GetListByPage(page int, pageSize int, categoryId int, search string) (list []Post, total int64) {
+	posts := []Post{}
+
+	query := db.Client.
+		Where("type", "ARTICLE").
+		Order("id DESC")
+
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+
+	if categoryId != 0 {
+		query.Where("category_id = ?", categoryId)
+	}
+
+	if search != "" {
+		query.Where("title = %?%", search)
+	}
+
+	// 获取数据总量
+	query.Count(&total)
+
+	// 查询数据列表
+	query.Limit(pageSize).
+		Offset((page-1)*pageSize).
+		Select("title", "id", "cover_ids").
+		Find(&posts)
+
+	return posts, total
+}

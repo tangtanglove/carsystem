@@ -13,6 +13,7 @@ type Home struct{}
 type IndexRequest struct {
 	CategoryId int `query:"categoryId" json:"categoryId"`
 	Page       int `query:"page" json:"page"`
+	PageSize   int `query:"pageSize" json:"pageSize"`
 }
 
 // 首页
