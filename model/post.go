@@ -107,7 +107,7 @@ func (model *Post) FindTreeSelectNode(pid int) (list []*treeselect.TreeData) {
 	return list
 }
 
-// 递归获取TreeSelect组件数据
+// 获取文章列表
 func (model *Post) GetListByPage(page int, pageSize int, categoryId int, search string) (pagination *Pagination) {
 	var (
 		pageTotal int64
@@ -141,7 +141,7 @@ func (model *Post) GetListByPage(page int, pageSize int, categoryId int, search 
 	// 查询数据列表
 	query.Limit(pageSize).
 		Offset((page-1)*pageSize).
-		Select("title", "id", "cover_ids").
+		Select("id", "title", "description", "cover_ids").
 		Find(&posts)
 
 	pageNum := math.Ceil(float64(pageTotal) / float64(pageSize))
@@ -165,4 +165,11 @@ func (model *Post) GetListByPage(page int, pageSize int, categoryId int, search 
 		Data:     posts,
 		Total:    pageTotal,
 	}
+}
+
+// 获取文章详情
+func (model *Post) GetInfoById(id interface{}) (post *Post) {
+	db.Client.Where("id = ?", id).First(&post)
+
+	return
 }

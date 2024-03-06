@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"fmt"
-
 	appmodel "github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v2/pkg/builder"
 	"github.com/quarkcloudio/quark-lite/model"
@@ -28,7 +26,6 @@ func (p *Home) Index(ctx *builder.Context) error {
 	categoryList, _ := (&model.Category{}).TreeSelect(false)
 
 	pagination := (&model.Post{}).GetListByPage(request.Page, request.PageSize, request.CategoryId, request.Search)
-	fmt.Println(pagination)
 
 	return ctx.Render(200, "index.html", map[string]interface{}{
 		"webSiteName":  webSiteName,
@@ -52,9 +49,12 @@ func (p *Home) Detail(ctx *builder.Context) error {
 	webSiteName := (&appmodel.Config{}).GetValue("WEB_SITE_NAME")
 	categoryList, _ := (&model.Category{}).TreeSelect(false)
 
+	article := (&model.Post{}).GetInfoById(request.ArticleId)
+
 	return ctx.Render(200, "detail.html", map[string]interface{}{
 		"webSiteName":  webSiteName,
 		"categoryList": categoryList,
 		"categoryId":   request.CategoryId,
+		"article":      article,
 	})
 }

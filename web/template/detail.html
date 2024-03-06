@@ -13,21 +13,23 @@
   <header>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" data-bs-theme="dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/">{{index . "webSiteName"}}</a>
+        <a class="navbar-brand" href="/">{{.webSiteName}}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/">首页</a>
+              <a class="nav-link {{if eq .categoryId 0}} active {{end}}" aria-current="page" href="/">首页</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
+            {{range $index, $category := .categoryList}}
+              <li class="nav-item">
+                <a class="nav-link {{if eq $category.Value $.categoryId }} active {{end}}" href="/article/list?categoryId={{ $category.Value }}">{{ $category.Title }}</a>
+              </li>
+            {{end}}
           </ul>
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="请输入搜索内容" aria-label="Search">
+          <form action="/article/list" method="get" class="d-flex" role="search">
+            <input name="search" class="form-control me-2" type="search" placeholder="请输入搜索内容" aria-label="Search">
             <button class="btn btn-outline-success" style="width: 100px;" type="submit">搜索</button>
           </form>
         </div>
@@ -40,14 +42,14 @@
       <!-- 标题和简介 -->
       <div class="row">
         <div class="col-md-12">
-          <h1>页面标题</h1>
+          <h1>{{.article.Title}}</h1>
         </div>
       </div>
 
       <!-- 页面主体内容 -->
       <div class="row">
         <div class="col-md-12">
-          <p>这里展示详细的内容信息...</p>
+          <p>{{.article.Content}}</p>
         </div>
       </div>
     </div>
