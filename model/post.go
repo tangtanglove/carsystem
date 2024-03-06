@@ -1,11 +1,14 @@
 package model
 
 import (
+	"math"
+	"strconv"
 	"time"
 
 	"github.com/quarkcloudio/quark-go/v2/pkg/app/admin/component/form/fields/treeselect"
 	appmodel "github.com/quarkcloudio/quark-go/v2/pkg/app/admin/model"
 	"github.com/quarkcloudio/quark-go/v2/pkg/dal/db"
+	"github.com/quarkcloudio/quark-lite/pkg/utils"
 	"gorm.io/gorm"
 )
 
@@ -105,7 +108,11 @@ func (model *Post) FindTreeSelectNode(pid int) (list []*treeselect.TreeData) {
 }
 
 // 递归获取TreeSelect组件数据
-func (model *Post) GetListByPage(page int, pageSize int, categoryId int, search string) (list []Post, total int64) {
+func (model *Post) GetListByPage(page int, pageSize int, categoryId int, search string) (pagination *Pagination) {
+	var (
+		pageTotal int64
+		pageItems []PageItem
+	)
 	posts := []Post{}
 
 	query := db.Client.Model(&Post{}).
@@ -129,7 +136,7 @@ func (model *Post) GetListByPage(page int, pageSize int, categoryId int, search 
 	}
 
 	// 获取数据总量
-	query.Count(&total)
+	query.Count(&pageTotal)
 
 	// 查询数据列表
 	query.Limit(pageSize).
@@ -137,5 +144,25 @@ func (model *Post) GetListByPage(page int, pageSize int, categoryId int, search 
 		Select("title", "id", "cover_ids").
 		Find(&posts)
 
-	return posts, total
+	pageNum := math.Ceil(float64(pageTotal) / float64(pageSize))
+	for i := 0; i < int(pageNum); i++ {
+		pageItems = append(pageItems, PageItem{
+			Title:   "第" + strconv.Itoa(i+1) + "页",
+			PageNum: i + 1,
+			Url:     "/article/list?page=" + strconv.Itoa(i+1) + "&pageSize=" + strconv.Itoa(pageSize) + "&categoryId=" + strconv.Itoa(categoryId) + "&search=" + search,
+			Active:  i+1 == page,
+		})
+	}
+
+	for k, v := range posts {
+		posts[k].CoverIds = utils.GetPicturePath(v.CoverIds)
+	}
+
+	return &Pagination{
+		Items:    pageItems,
+		Page:     page,
+		PageSize: pageSize,
+		Data:     posts,
+		Total:    pageTotal,
+	}
 }

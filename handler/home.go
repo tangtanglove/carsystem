@@ -27,16 +27,14 @@ func (p *Home) Index(ctx *builder.Context) error {
 	webSiteName := (&appmodel.Config{}).GetValue("WEB_SITE_NAME")
 	categoryList, _ := (&model.Category{}).TreeSelect(false)
 
-	articleList, articleTotal := (&model.Post{}).GetListByPage(request.Page, request.PageSize, request.CategoryId, request.Search)
-	fmt.Println(articleList)
+	pagination := (&model.Post{}).GetListByPage(request.Page, request.PageSize, request.CategoryId, request.Search)
+	fmt.Println(pagination)
 
 	return ctx.Render(200, "index.html", map[string]interface{}{
 		"webSiteName":  webSiteName,
 		"categoryList": categoryList,
 		"categoryId":   request.CategoryId,
-		"page":         request.Page,
-		"articleList":  articleList,
-		"articleTotal": articleTotal,
+		"pagination":   pagination,
 	})
 }
 
