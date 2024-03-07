@@ -25,11 +25,19 @@ type Template struct {
 	templates *template.Template
 }
 
+// 模板方法
+func html(x string) interface{} {
+	return template.HTML(x)
+}
+
 // 模板渲染方法
 func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
 	if viewContext, isMap := data.(map[string]interface{}); isMap {
 		viewContext["reverse"] = c.Echo().Reverse
 	}
+
+	// 注册模板方法
+	t.templates = t.templates.Funcs(template.FuncMap{"html": html})
 
 	return t.templates.ExecuteTemplate(w, name, data)
 }
